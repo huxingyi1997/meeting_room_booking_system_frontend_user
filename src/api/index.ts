@@ -5,7 +5,7 @@
 import axios from 'axios';
 import { message } from 'antd';
 
-import { Configuration, UserApi } from './autogen';
+import { Configuration, FeReportApi, UserApi } from './autogen';
 
 const baseApiUrl = `${window.location.protocol}//${window.location.host}`;
 
@@ -75,4 +75,6 @@ axiosInstance.interceptors.response.use(
 /**
  * import these API instances in your components to use the API methods
  */
+export const feReportApiInterface = new FeReportApi(appConfig, undefined, axiosInstance);
+
 export const userApiInterface = new UserApi(appConfig, undefined, axiosInstance);

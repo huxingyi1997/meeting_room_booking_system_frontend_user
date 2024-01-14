@@ -75,8 +75,8 @@ dependencies:
     specifier: ^4.9.5
     version: 4.9.5
   web-vitals:
-    specifier: ^2.1.4
-    version: 2.1.4
+    specifier: ^3.5.1
+    version: 3.5.1
   webpack-bundle-analyzer:
     specifier: ^4.10.1
     version: 4.10.1
@@ -12537,8 +12537,8 @@ packages:
       defaults: 1.0.4
     dev: true
 
-  /web-vitals@2.1.4:
-    resolution: {integrity: sha512-sVWcwhU5mX6crfI5Vd2dC4qchyTqxV8URinzt25XqVh+bHEPGH4C3NPrNionCP7Obx59wrYEbNlw4Z8sjALzZg==}
+  /web-vitals@3.5.1:
+    resolution: {integrity: sha512-xQ9lvIpfLxUj0eSmT79ZjRoU5wIRfIr7pNukL7ZE4EcWZSmfZQqOlhuAGfkVa3EFmzPHZhWhXfm2i5ys+THVPg==}
     dev: false
 
   /webidl-conversions@3.0.1:

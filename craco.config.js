@@ -65,6 +65,7 @@ module.exports = {
     alias: {
       '@': pathResolve('src'),
       '@components': pathResolve('src/components'),
+      '@pages': pathResolve('src/pages'),
     },
     plugins: [new WebpackBar()],
   }),
