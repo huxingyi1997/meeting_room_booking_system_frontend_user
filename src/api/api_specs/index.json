@@ -837,13 +837,7 @@
       "UpdateUserPasswordDto": {
         "type": "object",
         "properties": {
-          "captcha": {
-            "type": "string"
-          },
           "username": {
-            "type": "string"
-          },
-          "nickName": {
             "type": "string"
           },
           "password": {
@@ -852,9 +846,12 @@
           },
           "email": {
             "type": "string"
+          },
+          "captcha": {
+            "type": "string"
           }
         },
-        "required": ["captcha", "username", "nickName", "password", "email"]
+        "required": ["username", "password", "email", "captcha"]
       },
       "UpdateUserDto": {
         "type": "object",
