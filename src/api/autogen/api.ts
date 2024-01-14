@@ -372,19 +372,7 @@ export interface UpdateUserPasswordDto {
      * @type {string}
      * @memberof UpdateUserPasswordDto
      */
-    captcha: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UpdateUserPasswordDto
-     */
     username: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UpdateUserPasswordDto
-     */
-    nickName: string;
     /**
      * 
      * @type {string}
@@ -397,6 +385,12 @@ export interface UpdateUserPasswordDto {
      * @memberof UpdateUserPasswordDto
      */
     email: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateUserPasswordDto
+     */
+    captcha: string;
 }
 /**
  * 
