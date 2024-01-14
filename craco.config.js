@@ -77,7 +77,6 @@ module.exports = {
     // 本地服务的端口号
     port: 3001,
     hot: true,
-    overlay: false,
     proxy: [
       {
         context: ["/api"],
@@ -94,19 +93,7 @@ module.exports = {
           // );
         },
       },
-      {
-        context: ["/rn-release"],
-        target: "https://app.test.shopee.io", // url string to be parsed with the url module
-        changeOrigin: true, // changes the origin of the host header to the target URL
-        secure: false, // if you want to verify the SSL Certs
-      },
-      {
-        context: ["/oauth2"],
-        // target: 'http://localhost:4300',
-        target: "https://app-release.test.shopee.io", // url string to be parsed with the url module
-        changeOrigin: true, // changes the origin of the host header to the target URL
-        secure: false, // if you want to verify the SSL Certs
-      },
+  
     ],
   },
 };

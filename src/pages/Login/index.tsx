@@ -1,13 +1,9 @@
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, message } from 'antd';
+import { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-interface LoginUser {
-  username: string;
-  password: string;
-}
-
-const onFinish = (values: LoginUser) => {
-  console.log(values);
-};
+import { userApiInterface } from '../../api';
+import { LoginUserDto } from '../../api/autogen';
 
 const layout1 = {
   labelCol: { span: 4 },
@@ -20,6 +16,26 @@ const layout2 = {
 };
 
 const Login = () => {
+  const navigate = useNavigate();
+
+  const onFinish = useCallback(async (values: LoginUserDto) => {
+    const res = await userApiInterface.userControllerUserLogin(values);
+
+    const { data } = res.data;
+    if (data) {
+      message.success('登录成功');
+
+      localStorage.setItem('access_token', data.accessToken);
+      localStorage.setItem('refresh_token', data.refreshToken);
+      localStorage.setItem('user_info', JSON.stringify(data.userInfo));
+
+      setTimeout(() => {
+        navigate('/');
+      }, 1000);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div id="login-container" className="w-400 mt-100 mx-auto text-center">
       <h1>会议室预订系统</h1>
@@ -35,7 +51,7 @@ const Login = () => {
         <Form.Item {...layout2}>
           <div className="flex justify-between">
             <a href="/register">创建账号</a>
-            <a href="/help">忘记密码</a>
+            <a href="/update_password">忘记密码</a>
           </div>
         </Form.Item>
 

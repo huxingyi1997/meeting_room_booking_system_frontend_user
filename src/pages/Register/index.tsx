@@ -3,13 +3,12 @@ import { useForm } from 'antd/es/form/Form';
 import { useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-export interface RegisterUser {
-  username: string;
-  nickName: string;
-  password: string;
+import { userApiInterface } from '../../api';
+import { RegisterUserDto } from '../../api/autogen';
+import { HttpStatus } from '../../constants';
+
+export interface RegisterUser extends RegisterUserDto {
   confirmPassword: string;
-  email: string;
-  captcha: string;
 }
 
 const layout1 = {
@@ -30,16 +29,15 @@ const Register = () => {
     if (values.password !== values.confirmPassword) {
       return message.error('两次密码不一致');
     }
-    // const res = await register(values);
+    const res = await userApiInterface.userControllerRegister(values);
 
-    // if(res.status === 201 || res.status === 200) {
-    //     message.success('注册成功');
-    //     setTimeout(() => {
-    //         navigate('/login');
-    //     }, 1500);
-    // } else {
-    //     message.error(res.data.data || '系统繁忙，请稍后再试');
-    // }
+    if (res.status === HttpStatus.OK) {
+      message.success('注册成功');
+      setTimeout(() => {
+        navigate('/login');
+      }, 1500);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const sendCaptcha = useCallback(async function () {
@@ -48,16 +46,15 @@ const Register = () => {
       return message.error('请输入邮箱地址');
     }
 
-    // const res = await registerCaptcha(address);
-    // if(res.status === 201 || res.status === 200) {
-    //     message.success(res.data.data);
-    // } else {
-    //     message.error(res.data.data ||'系统繁忙，请稍后再试');
-    // }
+    const res = await userApiInterface.userControllerCaptcha(address);
+    if (res.status === HttpStatus.OK) {
+      message.success(res.data.data);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <div id="register-container">
+    <div id="register-container" className="w-400 mt-100 mx-auto text-center">
       <h1>会议室预订系统</h1>
       <Form form={form} {...layout1} onFinish={onFinish} colon={false} autoComplete="off">
         <Form.Item label="用户名" name="username" rules={[{ required: true, message: '请输入用户名!' }]}>
@@ -87,7 +84,7 @@ const Register = () => {
           <Input />
         </Form.Item>
 
-        <div className="captcha-wrapper">
+        <div className="flex justify-end">
           <Form.Item label="验证码" name="captcha" rules={[{ required: true, message: '请输入验证码!' }]}>
             <Input />
           </Form.Item>
@@ -97,13 +94,13 @@ const Register = () => {
         </div>
 
         <Form.Item {...layout2}>
-          <div className="links">
+          <div className="flex justify-end">
             已有账号？去<Link to="/login">登录</Link>
           </div>
         </Form.Item>
 
         <Form.Item {...layout1} label=" ">
-          <Button className="btn" type="primary" htmlType="submit">
+          <Button className="w-full" type="primary" htmlType="submit">
             注册
           </Button>
         </Form.Item>

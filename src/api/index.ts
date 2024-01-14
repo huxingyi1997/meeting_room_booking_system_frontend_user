@@ -3,9 +3,11 @@
  * Customize your API configs HERE
  */
 import axios from 'axios';
-import { Configuration, PollsApi } from './autogen';
+import { message } from 'antd';
 
-const baseApiUrl = `${window.location.protocol}//${window.location.host}:${window.location.port}`;
+import { Configuration, UserApi } from './autogen';
+
+const baseApiUrl = `${window.location.protocol}//${window.location.host}`;
 
 export const urlGenerator = (rootPath: string) => {
   return `${baseApiUrl}${rootPath}`;
@@ -39,10 +41,10 @@ axiosInstance.interceptors.request.use(config => {
 axiosInstance.interceptors.response.use(
   function (response) {
     if (response.data.message) {
-      // const origin = window.location.origin;
-      // const path = response.config.url?.split('?')[0] || '';
-      // const pathName = path.replace(origin, '');
-      // message.error(`${pathName}: ${response.data.error_msg}`);
+      const origin = window.location.origin;
+      const path = response.config.url?.split('?')[0] || '';
+      const pathName = path.replace(origin, '');
+      message.error(`${pathName}: ${response.data.message}`);
       return Promise.reject(response.data.message);
     }
     return response;
@@ -61,11 +63,11 @@ axiosInstance.interceptors.response.use(
     //       .catch((err) => Promise.reject(err));
     //   }
     // }
-    // if (error?.response?.status >= 500) {
-    //   message.error("Network error");
-    // } else if (error.response?.data?.message) {
-    //   message.error(error.response.data?.message);
-    // }
+    if (error?.response?.status >= 500) {
+      message.error('Network error');
+    } else if (error.response?.data?.message) {
+      message.error(error.response.data?.message);
+    }
     return Promise.reject(error);
   }
 );
@@ -73,4 +75,4 @@ axiosInstance.interceptors.response.use(
 /**
  * import these API instances in your components to use the API methods
  */
-export const pollsApiInterface = new PollsApi(appConfig, undefined, axiosInstance);
+export const userApiInterface = new UserApi(appConfig, undefined, axiosInstance);
