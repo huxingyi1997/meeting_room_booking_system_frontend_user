@@ -2,10 +2,10 @@ import { Button, Form, Input, message } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { HttpStatusCode } from 'axios';
 
-import { userApiInterface } from '../../api';
-import { RegisterUserDto } from '../../api/autogen';
-import { HttpStatus } from '../../constants';
+import { userApiInterface } from '@/api';
+import { RegisterUserDto } from '@/api/autogen';
 
 export interface RegisterUser extends RegisterUserDto {
   confirmPassword: string;
@@ -31,7 +31,7 @@ const Register = () => {
     }
     const res = await userApiInterface.userControllerRegister(values);
 
-    if (res.status === HttpStatus.OK) {
+    if (res.status === HttpStatusCode.Ok) {
       message.success('注册成功');
       setTimeout(() => {
         navigate('/login');
@@ -47,7 +47,7 @@ const Register = () => {
     }
 
     const res = await userApiInterface.userControllerCaptcha(address);
-    if (res.status === HttpStatus.OK) {
+    if (res.status === HttpStatusCode.Ok) {
       message.success(res.data.data);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

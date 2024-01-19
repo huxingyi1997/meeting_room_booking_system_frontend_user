@@ -2,8 +2,8 @@ import { Button, Form, Input, message } from 'antd';
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { userApiInterface } from '../../api';
-import { LoginUserDto } from '../../api/autogen';
+import { userApiInterface } from '@/api';
+import { LoginUserDto } from '@/api/autogen';
 
 const layout1 = {
   labelCol: { span: 4 },

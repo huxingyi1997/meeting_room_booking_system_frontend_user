@@ -2,6 +2,7 @@ import { Button, Form, Input, message } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { HttpStatusCode } from 'axios';
 
 import { userApiInterface } from '@/api';
 import { UpdateUserPasswordDto } from '@/api/autogen';
@@ -25,7 +26,7 @@ const UpdatePassword = () => {
     }
     const res = await userApiInterface.userControllerUpdatePassword(values);
 
-    if (res.status === 201 || res.status === 200) {
+    if (res.status === HttpStatusCode.Ok) {
       message.success('密码修改成功');
       setTimeout(() => {
         navigate('/login');
@@ -41,7 +42,7 @@ const UpdatePassword = () => {
     }
 
     const res = await userApiInterface.userControllerUpdatePasswordCaptcha(address);
-    if (res.status === 201 || res.status === 200) {
+    if (res.status === HttpStatusCode.Ok) {
       message.success(res.data.data);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

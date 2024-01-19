@@ -2,7 +2,7 @@
  * DO NOT change anything under ./autogen
  * Customize your API configs HERE
  */
-import axios from 'axios';
+import axios, { AxiosRequestConfig, HttpStatusCode } from 'axios';
 import { message } from 'antd';
 
 import { Configuration, FeReportApi, UserApi } from './autogen';
@@ -37,9 +37,30 @@ axiosInstance.interceptors.request.use(config => {
   return config;
 });
 
+export const getHeaderAuthorization = (): string | undefined => {
+  const accessToken = localStorage.getItem('access_token');
+
+  return accessToken ? 'Bearer ' + accessToken : undefined;
+};
+
+axiosInstance.interceptors.request.use(config => {
+  const authorization = getHeaderAuthorization();
+
+  if (authorization) {
+    config.headers.authorization = authorization;
+  }
+  return config;
+});
+
+interface PendingTask {
+  config: AxiosRequestConfig;
+  resolve: Function;
+}
+let refreshing: boolean = false;
+const queue: PendingTask[] = [];
 // global request error hint
 axiosInstance.interceptors.response.use(
-  function (response) {
+  response => {
     if (response.data.message) {
       const origin = window.location.origin;
       const path = response.config.url?.split('?')[0] || '';
@@ -49,21 +70,42 @@ axiosInstance.interceptors.response.use(
     }
     return response;
   },
-  function (error) {
-    // if (error?.response?.status === 401) {
-    //   if (!error.response?.config?.url.includes("api/v1/auth/login")) {
-    //     authApiInterface
-    //       .apiV1AuthLoginPost()
-    //       .then((res) => {
-    //         if (res?.status >= 200 && res?.status < 300) {
-    //           window.location.reload();
-    //           return Promise.resolve();
-    //         }
-    //       })
-    //       .catch((err) => Promise.reject(err));
-    //   }
-    // }
-    if (error?.response?.status >= 500) {
+  async error => {
+    if (!error.response) {
+      return Promise.reject(error);
+    }
+    const { config } = error.response;
+
+    if (refreshing) {
+      return new Promise(resolve => {
+        queue.push({
+          config,
+          resolve,
+        });
+      });
+    }
+    if (error?.response?.status === HttpStatusCode.Unauthorized) {
+      if (!config?.url.includes('/user/refresh')) {
+        const res = await refreshToken();
+
+        refreshing = false;
+
+        if (res.status === HttpStatusCode.Ok) {
+          queue.forEach(({ config, resolve }) => {
+            resolve(axiosInstance(config));
+          });
+
+          return axiosInstance(config);
+        } else {
+          message.error(res.data?.message);
+
+          setTimeout(() => {
+            window.location.href = '/login';
+          }, 1500);
+        }
+      }
+    }
+    if (error?.response?.status >= HttpStatusCode.InternalServerError) {
       message.error('Network error');
     } else if (error.response?.data?.message) {
       message.error(error.response.data?.message);
@@ -71,6 +113,15 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+async function refreshToken() {
+  const refresh_token = localStorage.getItem('refresh_token') || '';
+  const res = await userApiInterface.userControllerRefresh(refresh_token);
+
+  localStorage.setItem('access_token', res.data.data?.accessToken || '');
+  localStorage.setItem('refresh_token', res.data.data?.refreshToken || '');
+  return res;
+}
 
 /**
  * import these API instances in your components to use the API methods

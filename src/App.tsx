@@ -1,7 +1,9 @@
+import { Skeleton } from 'antd';
 import React from 'react';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
-import './App.css';
+const Index = React.lazy(() => import('./pages/Index'));
+const UpdateInfo = React.lazy(() => import('./pages/UpdateInfo'));
 
 const ErrorPage = React.lazy(() => import('./pages/ErrorPage'));
 const Login = React.lazy(() => import('./pages/Login'));
@@ -11,8 +13,14 @@ const UpdatePassword = React.lazy(() => import('./pages/UpdatePassword'));
 const routes = [
   {
     path: '/',
-    element: <h1 className="text-3xl font-bold">Hello world!</h1>,
+    element: <Index></Index>,
     errorElement: <ErrorPage />,
+    children: [
+      {
+        path: 'update_info',
+        element: <UpdateInfo />,
+      },
+    ],
   },
   {
     path: 'login',
@@ -31,7 +39,11 @@ const routes = [
 const router = createBrowserRouter(routes);
 
 const App = () => {
-  return <RouterProvider router={router} />;
+  return (
+    <React.Suspense fallback={<Skeleton />}>
+      <RouterProvider router={router} />
+    </React.Suspense>
+  );
 };
 
 export default App;

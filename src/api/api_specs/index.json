@@ -270,7 +270,12 @@
             }
           }
         },
-        "tags": ["User"]
+        "tags": ["User"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
       }
     },
     "/api/v1/user/update_password": {
@@ -429,7 +434,12 @@
             }
           }
         },
-        "tags": ["User"]
+        "tags": ["User"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
       }
     },
     "/api/v1/user/admin/update": {
@@ -469,7 +479,12 @@
             }
           }
         },
-        "tags": ["User"]
+        "tags": ["User"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
       }
     },
     "/api/v1/user/update/captcha": {
@@ -499,7 +514,12 @@
             }
           }
         },
-        "tags": ["User"]
+        "tags": ["User"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
       }
     },
     "/api/v1/user/freeze": {
@@ -538,7 +558,12 @@
             }
           }
         },
-        "tags": ["User"]
+        "tags": ["User"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
       }
     },
     "/api/v1/user/list": {
@@ -569,7 +594,63 @@
             }
           }
         },
-        "tags": ["User"]
+        "tags": ["User"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/user/upload": {
+      "post": {
+        "operationId": "UserController_uploadFile",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "$unifiedResRef": "NullUnifiedRes"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["User"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
       }
     },
     "/api/v1/fe-report/performance": {
