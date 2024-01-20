@@ -60,6 +60,12 @@ module.exports = {
       webpackConfig.module.rules.forEach((rule) => {
         rule.include = path.resolve(__dirname, "src");
       });
+      // 通过CDN导入
+      webpackConfig.externals = {
+        react: "var window.React",
+        "react-dom": "var window.ReactDOM",
+        antd: "antd",
+      };
       return webpackConfig;
     },
     alias: {
