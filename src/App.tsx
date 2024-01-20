@@ -1,26 +1,49 @@
+import { Skeleton } from 'antd';
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
-function App() {
+const Index = React.lazy(() => import('./pages/Index'));
+const UpdateInfo = React.lazy(() => import('./pages/UpdateInfo'));
+
+const ErrorPage = React.lazy(() => import('./pages/ErrorPage'));
+const Login = React.lazy(() => import('./pages/Login'));
+const Register = React.lazy(() => import('./pages/Register'));
+const UpdatePassword = React.lazy(() => import('./pages/UpdatePassword'));
+
+const routes = [
+  {
+    path: '/',
+    element: <Index></Index>,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: 'update_info',
+        element: <UpdateInfo />,
+      },
+    ],
+  },
+  {
+    path: 'login',
+    element: <Login />,
+  },
+  {
+    path: 'register',
+    element: <Register />,
+  },
+  {
+    path: 'update_password',
+    element: <UpdatePassword />,
+  },
+];
+
+const router = createBrowserRouter(routes);
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <React.Suspense fallback={<Skeleton />}>
+      <RouterProvider router={router} />
+    </React.Suspense>
   );
-}
+};
 
 export default App;

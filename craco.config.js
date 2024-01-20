@@ -4,6 +4,8 @@ const WebpackBar = require('webpackbar');
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const TerserPlugin = require('terser-webpack-plugin');
+const Tailwindcss = require("tailwindcss");
+const Autoprefixer = require('autoprefixer');
 
 const pathResolve = pathUrl => path.join(__dirname, pathUrl);
 const smp = new SpeedMeasurePlugin();
@@ -63,13 +65,36 @@ module.exports = {
     alias: {
       '@': pathResolve('src'),
       '@components': pathResolve('src/components'),
+      '@pages': pathResolve('src/pages'),
     },
     plugins: [new WebpackBar()],
   }),
+  style: {
+    postcssOptions: {
+      plugins: [Tailwindcss('./tailwind.config.js'), Autoprefixer],
+    },
+  },
   devServer: {
     // 本地服务的端口号
     port: 3001,
-    // 本地服务的响应头设置
-    headers: {},
+    hot: true,
+    proxy: [
+      {
+        context: ["/api"],
+        target: 'http://localhost:3000', // local backend develop
+        // target: "https://", // url string to be parsed with the url module
+        changeOrigin: true, // changes the origin of the host header to the target URL
+        secure: false, // if you want to verify the SSL Certs
+        onProxyReq: function (proxyReq) {
+          // 本地服务的响应头设置
+          // proxyReq.setHeader(
+          //   "Cookie",
+          //   // Change the cookie  when developing
+          //   ""
+          // );
+        },
+      },
+  
+    ],
   },
 };
