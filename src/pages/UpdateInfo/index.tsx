@@ -1,11 +1,11 @@
 import { Button, Form, Input, message } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { useCallback, useEffect } from 'react';
+import { HttpStatusCode } from 'axios';
 
 import { userApiInterface } from '@/api';
 import { UpdateUserDto } from '@/api/autogen';
-import { HttpStatusCode } from 'axios';
-import { HeadPicUpload } from './HeadPicUpload';
+import HeadPicUpload from './HeadPicUpload';
 
 export interface UserInfo {
   headPic: string;
