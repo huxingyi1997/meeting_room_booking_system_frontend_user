@@ -554,43 +554,6 @@ export interface UserInfo {
 /**
  * 
  * @export
- * @interface UserListDto
- */
-export interface UserListDto {
-    /**
-     * 
-     * @type {number}
-     * @memberof UserListDto
-     */
-    pageNo?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof UserListDto
-     */
-    pageSize?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserListDto
-     */
-    email?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserListDto
-     */
-    username?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserListDto
-     */
-    nickName?: string;
-}
-/**
- * 
- * @export
  * @interface UserListVo
  */
 export interface UserListVo {
@@ -1083,13 +1046,15 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
-         * @param {UserListDto} userListDto 
+         * @param {number} [pageNo] 
+         * @param {number} [pageSize] 
+         * @param {string} [email] 
+         * @param {string} [username] 
+         * @param {string} [nickName] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userControllerList: async (userListDto: UserListDto, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'userListDto' is not null or undefined
-            assertParamExists('userControllerList', 'userListDto', userListDto)
+        userControllerList: async (pageNo?: number, pageSize?: number, email?: string, username?: string, nickName?: string, options: any = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/v1/user/list`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1106,14 +1071,31 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
+            if (pageNo !== undefined) {
+                localVarQueryParameter['pageNo'] = pageNo;
+            }
+
+            if (pageSize !== undefined) {
+                localVarQueryParameter['pageSize'] = pageSize;
+            }
+
+            if (email !== undefined) {
+                localVarQueryParameter['email'] = email;
+            }
+
+            if (username !== undefined) {
+                localVarQueryParameter['username'] = username;
+            }
+
+            if (nickName !== undefined) {
+                localVarQueryParameter['nickName'] = nickName;
+            }
+
 
     
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
             setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(userListDto, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1546,12 +1528,16 @@ export const UserApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {UserListDto} userListDto 
+         * @param {number} [pageNo] 
+         * @param {number} [pageSize] 
+         * @param {string} [email] 
+         * @param {string} [username] 
+         * @param {string} [nickName] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async userControllerList(userListDto: UserListDto, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserListVoUnifiedRes>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerList(userListDto, options);
+        async userControllerList(pageNo?: number, pageSize?: number, email?: string, username?: string, nickName?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserListVoUnifiedRes>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerList(pageNo, pageSize, email, username, nickName, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1709,12 +1695,16 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
         },
         /**
          * 
-         * @param {UserListDto} userListDto 
+         * @param {number} [pageNo] 
+         * @param {number} [pageSize] 
+         * @param {string} [email] 
+         * @param {string} [username] 
+         * @param {string} [nickName] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userControllerList(userListDto: UserListDto, options?: any): AxiosPromise<UserListVoUnifiedRes> {
-            return localVarFp.userControllerList(userListDto, options).then((request) => request(axios, basePath));
+        userControllerList(pageNo?: number, pageSize?: number, email?: string, username?: string, nickName?: string, options?: any): AxiosPromise<UserListVoUnifiedRes> {
+            return localVarFp.userControllerList(pageNo, pageSize, email, username, nickName, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1871,13 +1861,17 @@ export class UserApi extends BaseAPI {
 
     /**
      * 
-     * @param {UserListDto} userListDto 
+     * @param {number} [pageNo] 
+     * @param {number} [pageSize] 
+     * @param {string} [email] 
+     * @param {string} [username] 
+     * @param {string} [nickName] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UserApi
      */
-    public userControllerList(userListDto: UserListDto, options?: any) {
-        return UserApiFp(this.configuration).userControllerList(userListDto, options).then((request) => request(this.axios, this.basePath));
+    public userControllerList(pageNo?: number, pageSize?: number, email?: string, username?: string, nickName?: string, options?: any) {
+        return UserApiFp(this.configuration).userControllerList(pageNo, pageSize, email, username, nickName, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
