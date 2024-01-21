@@ -569,17 +569,48 @@
     "/api/v1/user/list": {
       "get": {
         "operationId": "UserController_list",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UserListDto"
-              }
+        "parameters": [
+          {
+            "name": "pageNo",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "email",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "username",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "nickName",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
             }
           }
-        },
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -995,26 +1026,6 @@
           }
         },
         "required": ["users", "totalCount"]
-      },
-      "UserListDto": {
-        "type": "object",
-        "properties": {
-          "pageNo": {
-            "type": "number"
-          },
-          "pageSize": {
-            "type": "number"
-          },
-          "email": {
-            "type": "string"
-          },
-          "username": {
-            "type": "string"
-          },
-          "nickName": {
-            "type": "string"
-          }
-        }
       },
       "PerformanceEntry": {
         "type": "object",
