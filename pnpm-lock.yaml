@@ -47,6 +47,9 @@ dependencies:
   cache-loader:
     specifier: ^4.1.0
     version: 4.1.0(webpack@5.89.0)
+  dayjs:
+    specifier: ^1.11.10
+    version: 1.11.10
   postcss:
     specifier: ^8.4.33
     version: 8.4.33

@@ -823,12 +823,11 @@
             }
           },
           {
-            "name": "description",
+            "name": "capacity",
             "required": false,
             "in": "query",
             "schema": {
-              "maxLength": 100,
-              "type": "string"
+              "type": "number"
             }
           },
           {
