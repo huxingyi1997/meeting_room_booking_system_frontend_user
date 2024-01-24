@@ -273,7 +273,7 @@
           { "name": "pageNo", "required": false, "in": "query", "schema": { "type": "number" } },
           { "name": "pageSize", "required": false, "in": "query", "schema": { "type": "number" } },
           { "name": "name", "required": false, "in": "query", "schema": { "maxLength": 10, "type": "string" } },
-          { "name": "description", "required": false, "in": "query", "schema": { "maxLength": 100, "type": "string" } },
+          { "name": "capacity", "required": false, "in": "query", "schema": { "type": "number" } },
           { "name": "equipment", "required": false, "in": "query", "schema": { "maxLength": 50, "type": "string" } }
         ],
         "responses": {

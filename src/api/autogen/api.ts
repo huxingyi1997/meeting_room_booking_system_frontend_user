@@ -1098,12 +1098,12 @@ export const MeetingRoomApiAxiosParamCreator = function (configuration?: Configu
          * @param {number} [pageNo] 
          * @param {number} [pageSize] 
          * @param {string} [name] 
-         * @param {string} [description] 
+         * @param {number} [capacity] 
          * @param {string} [equipment] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        meetingRoomControllerList: async (pageNo?: number, pageSize?: number, name?: string, description?: string, equipment?: string, options: any = {}): Promise<RequestArgs> => {
+        meetingRoomControllerList: async (pageNo?: number, pageSize?: number, name?: string, capacity?: number, equipment?: string, options: any = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/v1/meeting-room/list`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1132,8 +1132,8 @@ export const MeetingRoomApiAxiosParamCreator = function (configuration?: Configu
                 localVarQueryParameter['name'] = name;
             }
 
-            if (description !== undefined) {
-                localVarQueryParameter['description'] = description;
+            if (capacity !== undefined) {
+                localVarQueryParameter['capacity'] = capacity;
             }
 
             if (equipment !== undefined) {
@@ -1235,13 +1235,13 @@ export const MeetingRoomApiFp = function(configuration?: Configuration) {
          * @param {number} [pageNo] 
          * @param {number} [pageSize] 
          * @param {string} [name] 
-         * @param {string} [description] 
+         * @param {number} [capacity] 
          * @param {string} [equipment] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async meetingRoomControllerList(pageNo?: number, pageSize?: number, name?: string, description?: string, equipment?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MeetingRoomListVoUnifiedRes>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.meetingRoomControllerList(pageNo, pageSize, name, description, equipment, options);
+        async meetingRoomControllerList(pageNo?: number, pageSize?: number, name?: string, capacity?: number, equipment?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MeetingRoomListVoUnifiedRes>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.meetingRoomControllerList(pageNo, pageSize, name, capacity, equipment, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1296,13 +1296,13 @@ export const MeetingRoomApiFactory = function (configuration?: Configuration, ba
          * @param {number} [pageNo] 
          * @param {number} [pageSize] 
          * @param {string} [name] 
-         * @param {string} [description] 
+         * @param {number} [capacity] 
          * @param {string} [equipment] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        meetingRoomControllerList(pageNo?: number, pageSize?: number, name?: string, description?: string, equipment?: string, options?: any): AxiosPromise<MeetingRoomListVoUnifiedRes> {
-            return localVarFp.meetingRoomControllerList(pageNo, pageSize, name, description, equipment, options).then((request) => request(axios, basePath));
+        meetingRoomControllerList(pageNo?: number, pageSize?: number, name?: string, capacity?: number, equipment?: string, options?: any): AxiosPromise<MeetingRoomListVoUnifiedRes> {
+            return localVarFp.meetingRoomControllerList(pageNo, pageSize, name, capacity, equipment, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1361,14 +1361,14 @@ export class MeetingRoomApi extends BaseAPI {
      * @param {number} [pageNo] 
      * @param {number} [pageSize] 
      * @param {string} [name] 
-     * @param {string} [description] 
+     * @param {number} [capacity] 
      * @param {string} [equipment] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof MeetingRoomApi
      */
-    public meetingRoomControllerList(pageNo?: number, pageSize?: number, name?: string, description?: string, equipment?: string, options?: any) {
-        return MeetingRoomApiFp(this.configuration).meetingRoomControllerList(pageNo, pageSize, name, description, equipment, options).then((request) => request(this.axios, this.basePath));
+    public meetingRoomControllerList(pageNo?: number, pageSize?: number, name?: string, capacity?: number, equipment?: string, options?: any) {
+        return MeetingRoomApiFp(this.configuration).meetingRoomControllerList(pageNo, pageSize, name, capacity, equipment, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

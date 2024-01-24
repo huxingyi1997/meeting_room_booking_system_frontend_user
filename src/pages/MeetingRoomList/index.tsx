@@ -62,16 +62,14 @@ const MeetingRoomList = () => {
       {
         title: '操作',
         render: (_, record) => (
-          <div>
-            <button
-              onClick={() => {
-                setCurrentMeetingRoom(record);
-                setIsCreateModalOpen(true);
-              }}
-            >
-              预定
-            </button>
-          </div>
+          <button
+            onClick={() => {
+              setCurrentMeetingRoom(record);
+              setIsCreateModalOpen(true);
+            }}
+          >
+            预定
+          </button>
         ),
       },
     ],
@@ -84,7 +82,6 @@ const MeetingRoomList = () => {
         pageNo,
         pageSize,
         values.name,
-        // @ts-ignore
         values.capacity,
         values.equipment
       );
