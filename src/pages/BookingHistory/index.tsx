@@ -1,10 +1,13 @@
 import { Button, DatePicker, Form, Input, Popconfirm, Table, TimePicker, message } from 'antd';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'antd/es/form/Form';
 import { ColumnsType } from 'antd/es/table';
+import { HttpStatusCode } from 'axios';
 import dayjs from 'dayjs';
 
-import { MeetingRoom } from '@/api/autogen';
+import { Booking, BookingStatusEnum, MeetingRoom } from '@/api/autogen';
+import { bookingApiInterface } from '@/api';
+import { StatusFilterArray, StatusMap } from './constant';
 
 export interface SearchBooking {
   username: string;
@@ -16,50 +19,168 @@ export interface SearchBooking {
   rangeEndTime: Date;
 }
 
-interface BookingSearchResult {
-  id: number;
-  startTime: string;
-  endTime: string;
-  status: string;
-  note: string;
-  createTime: string;
-  updateTime: string;
-  room: MeetingRoom;
+interface BookingSearchResult extends Booking {
+  key: number;
 }
 
-function getUserInfo() {
+const getUserInfo = () => {
   const userInfoStr = localStorage.getItem('user_info');
 
   if (userInfoStr) {
     return JSON.parse(userInfoStr);
   }
-}
+};
 
 const BookingHistory = () => {
   const [pageNo, setPageNo] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
+  const [totalCount, setTotalCount] = useState<number>(0);
   const [bookingSearchResult, setBookingSearchResult] = useState<Array<BookingSearchResult>>([]);
   const [num, setNum] = useState<number>(0);
 
-  const searchBooking = async (values: SearchBooking) => {
-    // const res = await bookingList(values, pageNo, pageSize);
-    // const { data } = res.data;
-    // if(res.status === 201 || res.status === 200) {
-    //     setBookingSearchResult(data.bookings.map((item: BookingSearchResult) => {
-    //         return {
-    //             key: item.id,
-    //             ...item
-    //         }
-    //     }))
-    // }
-  };
+  const searchBooking = useCallback(
+    async (values: SearchBooking) => {
+      const {
+        username,
+        meetingRoomName,
+        meetingRoomPosition,
+        rangeStartDate,
+        rangeStartTime,
+        rangeEndDate,
+        rangeEndTime,
+      } = values;
+      let bookingTimeRangeStart;
+      let bookingTimeRangeEnd;
 
-  const [form] = useForm();
+      if (rangeStartDate && rangeStartTime) {
+        const rangeStartDateStr = dayjs(rangeStartDate).format('YYYY-MM-DD');
+        const rangeStartTimeStr = dayjs(rangeStartTime).format('HH:mm');
+        bookingTimeRangeStart = dayjs(rangeStartDateStr + ' ' + rangeStartTimeStr).valueOf();
+      }
 
-  const changePage = function (pageNo: number, pageSize: number) {
+      if (rangeEndDate && rangeEndTime) {
+        const rangeEndDateStr = dayjs(rangeEndDate).format('YYYY-MM-DD');
+        const rangeEndTimeStr = dayjs(rangeEndTime).format('HH:mm');
+        bookingTimeRangeEnd = dayjs(rangeEndDateStr + ' ' + rangeEndTimeStr).valueOf();
+      }
+      const res = await bookingApiInterface.bookingControllerList(
+        pageNo,
+        pageSize,
+        username,
+        meetingRoomName,
+        meetingRoomPosition,
+        bookingTimeRangeStart,
+        bookingTimeRangeEnd
+      );
+      const { data } = res.data;
+      if (res.status === HttpStatusCode.Ok && data) {
+        const { bookings, totalCount } = data;
+        setBookingSearchResult(
+          bookings.map(item => {
+            return {
+              key: item.id,
+              ...item,
+            };
+          })
+        );
+        setTotalCount(totalCount);
+      }
+    },
+    [pageNo, pageSize]
+  );
+
+  const changeStatus = useCallback(async (id: number) => {
+    const res = await bookingApiInterface.bookingControllerUnbind(id);
+    if (res.status === HttpStatusCode.Ok) {
+      message.success('状态更新成功');
+      setNum(Math.random());
+    }
+  }, []);
+
+  const changePage = useCallback((pageNo: number, pageSize: number) => {
     setPageNo(pageNo);
     setPageSize(pageSize);
-  };
+  }, []);
+
+  const columns: ColumnsType<BookingSearchResult> = useMemo(
+    () => [
+      {
+        title: '会议室名称',
+        dataIndex: 'room',
+        key: 'room',
+        render(room: MeetingRoom) {
+          return room?.name;
+        },
+      },
+      {
+        title: '开始时间',
+        dataIndex: 'startTime',
+        key: 'startTime',
+        render(startTime: string) {
+          return dayjs(new Date(startTime)).format('YYYY-MM-DD HH:mm:ss');
+        },
+      },
+      {
+        title: '结束时间',
+        dataIndex: 'endTime',
+        key: 'endTime',
+        render(endTime: string) {
+          return dayjs(new Date(endTime)).format('YYYY-MM-DD HH:mm:ss');
+        },
+      },
+      {
+        title: '审批状态',
+        dataIndex: 'status',
+        key: 'status',
+        onFilter: (value, record) => record.status === (value as string),
+        filters: [...StatusFilterArray],
+        render(status: BookingStatusEnum) {
+          return StatusMap.get(status);
+        },
+      },
+      {
+        title: '预定时间',
+        dataIndex: 'createTime',
+        key: 'createTime',
+        render(createTime: string) {
+          return dayjs(new Date(createTime)).format('YYYY-MM-DD hh:mm:ss');
+        },
+      },
+      {
+        title: '备注',
+        dataIndex: 'note',
+        key: 'note',
+      },
+      {
+        title: '描述',
+        dataIndex: 'description',
+        key: 'description',
+      },
+      {
+        title: '操作',
+        dataIndex: 'id',
+        key: 'id',
+        render: (id: number, record) =>
+          record.status === BookingStatusEnum.Progressing ? (
+            <div>
+              <Popconfirm
+                title="解除申请"
+                description="确认解除吗？"
+                onConfirm={() => changeStatus(id)}
+                okText="Yes"
+                cancelText="No"
+              >
+                <button>解除预定</button>
+              </Popconfirm>
+            </div>
+          ) : null,
+      },
+    ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+
+  const [form] = useForm();
 
   useEffect(() => {
     searchBooking({
@@ -73,102 +194,9 @@ const BookingHistory = () => {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageNo, pageSize, num]);
-
-  async function changeStatus(id: number) {
-    // const res = await unbind(id);
-    // if(res.status === 201 || res.status === 200) {
-    //     message.success('状态更新成功');
-    //     setNum(Math.random());
-    // } else {
-    //     message.error(res.data.data);
-    // }
-  }
-
-  const columns: ColumnsType<BookingSearchResult> = useMemo(
-    () => [
-      {
-        title: '会议室名称',
-        dataIndex: 'room',
-        render(_, record) {
-          return record.room.name;
-        },
-      },
-      {
-        title: '开始时间',
-        dataIndex: 'startTime',
-        render(_, record) {
-          return dayjs(new Date(record.startTime)).format('YYYY-MM-DD HH:mm:ss');
-        },
-      },
-      {
-        title: '结束时间',
-        dataIndex: 'endTime',
-        render(_, record) {
-          return dayjs(new Date(record.endTime)).format('YYYY-MM-DD HH:mm:ss');
-        },
-      },
-      {
-        title: '审批状态',
-        dataIndex: 'status',
-        onFilter: (value, record) => record.status.startsWith(value as string),
-        filters: [
-          {
-            text: '审批通过',
-            value: '审批通过',
-          },
-          {
-            text: '审批驳回',
-            value: '审批驳回',
-          },
-          {
-            text: '申请中',
-            value: '申请中',
-          },
-          {
-            text: '已解除',
-            value: '已解除',
-          },
-        ],
-      },
-      {
-        title: '预定时间',
-        dataIndex: 'createTime',
-        render(_, record) {
-          return dayjs(new Date(record.createTime)).format('YYYY-MM-DD hh:mm:ss');
-        },
-      },
-      {
-        title: '备注',
-        dataIndex: 'note',
-      },
-      {
-        title: '描述',
-        dataIndex: 'description',
-      },
-      {
-        title: '操作',
-        render: (_, record) =>
-          record.status === '申请中' ? (
-            <div>
-              <Popconfirm
-                title="解除申请"
-                description="确认解除吗？"
-                onConfirm={() => changeStatus(record.id)}
-                okText="Yes"
-                cancelText="No"
-              >
-                <button>解除预定</button>
-              </Popconfirm>
-            </div>
-          ) : null,
-      },
-    ],
-    []
-  );
-
   return (
-    <div id="bookingHistory-container">
-      <div className="bookingHistory-form">
+    <div id="bookingHistory-container" className="p-5">
+      <div className="mb-10">
         <Form form={form} onFinish={searchBooking} name="search" layout="inline" colon={false}>
           <Form.Item label="会议室名称" name="meetingRoomName">
             <Input />
@@ -206,9 +234,12 @@ const BookingHistory = () => {
           columns={columns}
           dataSource={bookingSearchResult}
           pagination={{
+            showSizeChanger: true,
             current: pageNo,
             pageSize: pageSize,
             onChange: changePage,
+            pageSizeOptions: [10, 20, 50],
+            total: totalCount,
           }}
         />
       </div>

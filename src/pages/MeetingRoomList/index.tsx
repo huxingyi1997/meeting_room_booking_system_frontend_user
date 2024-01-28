@@ -23,6 +23,39 @@ const MeetingRoomList = () => {
 
   const [meetingRoomResult, setMeetingRoomResult] = useState<Array<MeetingRoom>>([]);
 
+  const searchMeetingRoom = useCallback(
+    async (values: SearchMeetingRoom) => {
+      const res = await meetingRoomApiInterface.meetingRoomControllerList(
+        pageNo,
+        pageSize,
+        values.name,
+        values.capacity,
+        values.equipment
+      );
+
+      const { data } = res.data;
+      if (res.status === HttpStatusCode.Ok && data) {
+        const { meetingRooms, totalCount } = data;
+        setMeetingRoomResult(
+          meetingRooms.map(item => {
+            return {
+              key: item.id,
+              ...item,
+            };
+          })
+        );
+        setTotalCount(totalCount);
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [pageNo, pageSize]
+  );
+
+  const changePage = useCallback((pageNo: number, pageSize: number) => {
+    setPageNo(pageNo);
+    setPageSize(pageSize);
+  }, []);
+
   const columns: ColumnsType<MeetingRoom> = useMemo(
     () => [
       {
@@ -56,8 +89,8 @@ const MeetingRoomList = () => {
       {
         title: '预定状态',
         dataIndex: 'isBooked',
-        render: (_, record) =>
-          record.isBooked ? <Badge status="error">已被预订</Badge> : <Badge status="success">可预定</Badge>,
+        render: (isBooked: boolean) =>
+          isBooked ? <Badge status="error">已被预订</Badge> : <Badge status="success">可预定</Badge>,
       },
       {
         title: '操作',
@@ -76,34 +109,6 @@ const MeetingRoomList = () => {
     []
   );
 
-  const searchMeetingRoom = useCallback(
-    async (values: SearchMeetingRoom) => {
-      const res = await meetingRoomApiInterface.meetingRoomControllerList(
-        pageNo,
-        pageSize,
-        values.name,
-        values.capacity,
-        values.equipment
-      );
-
-      const { data } = res.data;
-      if (res.status === HttpStatusCode.Ok && data) {
-        const { meetingRooms, totalCount } = data;
-        setMeetingRoomResult(
-          meetingRooms.map(item => {
-            return {
-              key: item.id,
-              ...item,
-            };
-          })
-        );
-        setTotalCount(totalCount);
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    },
-    [pageNo, pageSize]
-  );
-
   const [form] = useForm();
 
   useEffect(() => {
@@ -114,11 +119,6 @@ const MeetingRoomList = () => {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageNo, pageSize]);
-
-  const changePage = useCallback((pageNo: number, pageSize: number) => {
-    setPageNo(pageNo);
-    setPageSize(pageSize);
-  }, []);
 
   return (
     <div id="meetingRoomList-container" className="p-5">
@@ -143,6 +143,7 @@ const MeetingRoomList = () => {
           </Form.Item>
         </Form>
       </div>
+
       <div className="meetingRoomList-table">
         <Table
           columns={columns}
@@ -157,6 +158,7 @@ const MeetingRoomList = () => {
           }}
         />
       </div>
+
       {currentMeetingRoom ? (
         <CreateBookingModal
           meetingRoom={currentMeetingRoom}

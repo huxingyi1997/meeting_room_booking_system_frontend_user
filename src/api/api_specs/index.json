@@ -1770,22 +1770,22 @@
       "CreateBookingDto": {
         "type": "object",
         "properties": {
-          "meetingRoomId": {
-            "type": "number"
-          },
           "startTime": {
-            "format": "date-time",
-            "type": "string"
+            "type": "number",
+            "format": "date-time"
           },
           "endTime": {
-            "format": "date-time",
-            "type": "string"
+            "type": "number",
+            "format": "date-time"
+          },
+          "meetingRoomId": {
+            "type": "number"
           },
           "note": {
             "type": "string"
           }
         },
-        "required": ["meetingRoomId", "startTime", "endTime"]
+        "required": ["startTime", "endTime", "meetingRoomId"]
       },
       "Permission": {
         "type": "object",
@@ -1882,16 +1882,16 @@
       "Booking": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "number"
-          },
           "startTime": {
-            "format": "date-time",
-            "type": "string"
+            "type": "number",
+            "format": "date-time"
           },
           "endTime": {
-            "format": "date-time",
-            "type": "string"
+            "type": "number",
+            "format": "date-time"
+          },
+          "id": {
+            "type": "number"
           },
           "status": {
             "type": "string",
@@ -1915,7 +1915,7 @@
             "type": "string"
           }
         },
-        "required": ["id", "startTime", "endTime", "status", "user", "room", "createTime", "updateTime"]
+        "required": ["startTime", "endTime", "id", "status", "user", "room", "createTime", "updateTime"]
       },
       "BookingListVo": {
         "type": "object",

@@ -1,7 +1,11 @@
-import { DatePicker, Form, Input, Modal, TimePicker } from 'antd';
+import { DatePicker, Form, Input, Modal, TimePicker, message } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 
 import { MeetingRoom } from '@/api/autogen';
+import { bookingApiInterface } from '@/api';
+import { HttpStatusCode } from 'axios';
+import dayjs from 'dayjs';
+import { useCallback } from 'react';
 
 interface CreateBookingModalProps {
   isOpen: boolean;
@@ -15,7 +19,6 @@ const layout = {
 };
 
 export interface CreateBooking {
-  meetingRoomId: number;
   rangeStartDate: Date;
   rangeStartTime: Date;
   rangeEndDate: Date;
@@ -26,18 +29,35 @@ export interface CreateBooking {
 const CreateBookingModal = (props: CreateBookingModalProps) => {
   const [form] = useForm<CreateBooking>();
 
-  const handleOk = async function () {
+  const handleOk = useCallback(async () => {
     const values = form.getFieldsValue();
-    values.meetingRoomId = props.meetingRoom.id;
 
-    // const res = await bookingAdd(values);
+    const { rangeStartDate, rangeStartTime, rangeEndDate, rangeEndTime, note } = values;
+    const meetingRoomId = props.meetingRoom.id;
+    const rangeStartDateStr = dayjs(rangeStartDate).format('YYYY-MM-DD');
+    const rangeStartTimeStr = dayjs(rangeStartTime).format('HH:mm');
+    const startTime = dayjs(rangeStartDateStr + ' ' + rangeStartTimeStr).valueOf();
 
-    // if(res.status === 201 || res.status === 200) {
-    //     message.success('预定成功');
-    //     form.resetFields();
-    //     props.handleClose();
-    // }
-  };
+    const rangeEndDateStr = dayjs(rangeEndDate).format('YYYY-MM-DD');
+    const rangeEndTimeStr = dayjs(rangeEndTime).format('HH:mm');
+    const endTime = dayjs(rangeEndDateStr + ' ' + rangeEndTimeStr).valueOf();
+
+    const res = await bookingApiInterface.bookingControllerAdd({
+      meetingRoomId,
+      // @ts-ignore
+      startTime,
+      // @ts-ignore
+      endTime,
+      note,
+    });
+
+    if (res.status === HttpStatusCode.Ok) {
+      message.success('预定成功');
+      form.resetFields();
+      props.handleClose();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Modal title="创建会议室" open={props.isOpen} onOk={handleOk} onCancel={() => props.handleClose()} okText={'创建'}>
