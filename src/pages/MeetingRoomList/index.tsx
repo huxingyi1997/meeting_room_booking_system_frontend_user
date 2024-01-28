@@ -18,7 +18,7 @@ const MeetingRoomList = () => {
   const [pageNo, setPageNo] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [totalCount, setTotalCount] = useState<number>(0);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
   const [currentMeetingRoom, setCurrentMeetingRoom] = useState<MeetingRoom>();
 
   const [meetingRoomResult, setMeetingRoomResult] = useState<Array<MeetingRoom>>([]);
@@ -121,8 +121,8 @@ const MeetingRoomList = () => {
   }, []);
 
   return (
-    <div id="meetingRoomList-container" className="p-20">
-      <div className="mb-40">
+    <div id="meetingRoomList-container" className="p-5">
+      <div className="mb-10">
         <Form form={form} onFinish={searchMeetingRoom} name="search" layout="inline" colon={false}>
           <Form.Item label="会议室名称" name="name">
             <Input />
