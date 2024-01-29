@@ -1363,6 +1363,118 @@
           }
         ]
       }
+    },
+    "/api/v1/statistic/userBookingCount": {
+      "get": {
+        "operationId": "StatisticController_userBookignCount",
+        "parameters": [
+          {
+            "name": "startTime",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endTime",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "$ref": "#/components/schemas/UserBookignCountVo"
+                      }
+                    },
+                    "error": {
+                      "type": "integer"
+                    },
+                    "error_msg": {
+                      "type": "string"
+                    }
+                  },
+                  "$$ref": "#/components/schemas/UserBookignCountVoUnifiedRes"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Statistic"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/statistic/meetingRoomUsedCount": {
+      "get": {
+        "operationId": "StatisticController_meetingRoomUsedCount",
+        "parameters": [
+          {
+            "name": "startTime",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endTime",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "$ref": "#/components/schemas/MeetingRoomUsedCountVo"
+                      }
+                    },
+                    "error": {
+                      "type": "integer"
+                    },
+                    "error_msg": {
+                      "type": "string"
+                    }
+                  },
+                  "$$ref": "#/components/schemas/MeetingRoomUsedCountVoUnifiedRes"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Statistic"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
     }
   },
   "info": {
@@ -1931,6 +2043,36 @@
           }
         },
         "required": ["bookings", "totalCount"]
+      },
+      "UserBookignCountVo": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "bookingCount": {
+            "type": "string"
+          }
+        },
+        "required": ["userId", "username", "bookingCount"]
+      },
+      "MeetingRoomUsedCountVo": {
+        "type": "object",
+        "properties": {
+          "meetingRoomId": {
+            "type": "string"
+          },
+          "meetingRoomName": {
+            "type": "string"
+          },
+          "usedCount": {
+            "type": "string"
+          }
+        },
+        "required": ["meetingRoomId", "meetingRoomName", "usedCount"]
       }
     }
   }
