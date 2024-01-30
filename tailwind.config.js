@@ -8,8 +8,9 @@ module.exports = {
     extend: {
       width: {
         '50': '50px',
+        '200': '200px',
         '400': '400px',
-      }
+      },
     }
   },
   plugins: [],

@@ -1,6 +1,6 @@
 import React, { ErrorInfo, ReactNode } from 'react';
 
-import { feReportApiInterface } from "@/api";
+import { feReportApiInterface } from '@/api';
 
 interface State {
   hasError: boolean;
@@ -33,10 +33,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
     const path: string = `/api/v1/fe-report/error`;
     // Use `navigator.sendBeacon()` if available, falling back to `fetch()`.
     (navigator.sendBeacon &&
-      navigator.sendBeacon(
-        path,
-        new Blob([body], { type: "application/json; charset=UTF-8" })
-      )) ||
+      navigator.sendBeacon(path, new Blob([body], { type: 'application/json; charset=UTF-8' }))) ||
       feReportApiInterface.feReportControllerError(info);
   }
 

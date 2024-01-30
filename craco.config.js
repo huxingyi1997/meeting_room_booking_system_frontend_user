@@ -19,6 +19,12 @@ module.exports = {
   },
   webpack: smp.wrap({
     configure: (webpackConfig, { env }) => {
+      // 通过CDN导入
+      webpackConfig.externals = {
+        react: "React",
+        "react-dom": "ReactDOM",
+      };
+
       webpackConfig.optimization.splitChunks = {
         ...webpackConfig.optimization.splitChunks,
         cacheGroups: {

@@ -15,7 +15,7 @@ const authorization = getHeaderAuthorization();
 
 const props: DraggerProps = {
   name: 'file',
-  action: 'http://localhost:3001/api/v1/user/upload',
+  action: '/api/v1/user/upload',
   headers: authorization
     ? {
         authorization,
@@ -41,7 +41,7 @@ const dragger = (
   </Dragger>
 );
 
-export function HeadPicUpload(props: HeadPicUploadProps) {
+const HeadPicUpload = (props: HeadPicUploadProps) => {
   onChange = props.onChange!;
 
   return props?.value ? (
@@ -52,4 +52,5 @@ export function HeadPicUpload(props: HeadPicUploadProps) {
   ) : (
     <div>{dragger}</div>
   );
-}
+};
+export default HeadPicUpload;
