@@ -44,9 +44,7 @@ const CreateBookingModal = (props: CreateBookingModalProps) => {
 
     const res = await bookingApiInterface.bookingControllerAdd({
       meetingRoomId,
-      // @ts-ignore
       startTime,
-      // @ts-ignore
       endTime,
       note,
     });
